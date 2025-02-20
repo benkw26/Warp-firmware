@@ -1,8 +1,4 @@
 #include <stdint.h>
-
-/*
- *	config.h needs to come first
- */
 #include "config.h"
 
 #include "fsl_spi_master_driver.h"
@@ -13,8 +9,8 @@
 #include "warp.h"
 #include "devSSD1331.h"
 
-volatile uint8_t	inBuffer[1];
-volatile uint8_t	payloadBytes[1];
+volatile uint8_t	inBuffer[32];
+volatile uint8_t	payloadBytes[32];
 
 
 /*
@@ -77,7 +73,7 @@ devSSD1331init(void)
 	PORT_HAL_SetMuxMode(PORTA_BASE, 8u, kPortMuxAlt3);
 	PORT_HAL_SetMuxMode(PORTA_BASE, 9u, kPortMuxAlt3);
 
-	enableSPIpins();
+	warpEnableSPIpins();
 
 	/*
 	 *	Override Warp firmware's use of these pins.
@@ -139,12 +135,14 @@ devSSD1331init(void)
 	writeCommand(kSSD1331CommandCONTRASTC);		// 0x83
 	writeCommand(0x7D);
 	writeCommand(kSSD1331CommandDISPLAYON);		// Turn on oled panel
+	SEGGER_RTT_WriteString(0, "\r\n\tDone with initialization sequence...\n");
 
 	/*
 	 *	To use fill commands, you will have to issue a command to the display to enable them. See the manual.
 	 */
 	writeCommand(kSSD1331CommandFILL);
 	writeCommand(0x01);
+	SEGGER_RTT_WriteString(0, "\r\n\tDone with enabling fill...\n");
 
 	/*
 	 *	Clear Screen
@@ -154,13 +152,53 @@ devSSD1331init(void)
 	writeCommand(0x00);
 	writeCommand(0x5F);
 	writeCommand(0x3F);
+	SEGGER_RTT_WriteString(0, "\r\n\tDone with screen clear...\n");
 
 
 
 	/*
-	 *	Any post-initialization drawing commands go here.
+	 *	Read the manual for the SSD1331 (SSD1331_1.2.pdf) to figure
+	 *	out how to fill the entire screen with the brightest shade
+	 *	of green.
 	 */
-	//...
+
+	writeCommand(kSSD1331CommandCONTRASTA);
+	writeCommand(0xFF);
+	writeCommand(kSSD1331CommandCONTRASTB);
+	writeCommand(0xFF);
+	writeCommand(kSSD1331CommandCONTRASTC);
+	writeCommand(0xFF);
+
+	writeCommand(kSSD1331CommandMASTERCURRENT);	// 0x87
+	writeCommand(0x0F);
+	
+	writeCommand(kSSD1331CommandPRECHARGELEVEL);
+	writeCommand(0x3E);
+	writeCommand(kSSD1331CommandPRECHARGEA);
+	writeCommand(0xFF);
+	writeCommand(kSSD1331CommandPRECHARGEB);
+	writeCommand(0xFF);
+	writeCommand(kSSD1331CommandPRECHARGEC);
+	writeCommand(0xFF);
+	
+	writeCommand(kSSD1331CommandDRAWRECT);
+	
+	writeCommand(0x00); // Starting column
+	writeCommand(0x00); // Starting row
+	
+	writeCommand(0x5F); // Ending column (95)
+	writeCommand(0x3F); // Ending row (63)
+	
+	writeCommand(0x00); // Outline color R
+	writeCommand(0xFF); // Outline color G (brightest green)
+	writeCommand(0x00); // Outline color B
+	
+	writeCommand(0x00); // Fill color R
+	writeCommand(0xFF); // Fill color G (brightest green)
+	writeCommand(0x00); // Fill color B
+
+
+	SEGGER_RTT_WriteString(0, "\r\n\tDone with draw rectangle...\n");
 
 
 

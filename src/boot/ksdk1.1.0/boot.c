@@ -88,6 +88,7 @@
 #include "devHDC1000.h"
 #include "devRV8803C7.h"
 #include "devRF430CL331H.h"
+#include "devSSD1331.h"
 
 
 #if (WARP_BUILD_ENABLE_DEVADXL362)
@@ -1662,7 +1663,7 @@ main(void)
 #endif
 
 #if (WARP_BUILD_ENABLE_DEVMMA8451Q)
-		initMMA8451Q(	0x1C	/* i2cAddress */,	kWarpDefaultSupplyVoltageMillivoltsMMA8451Q	);
+		initMMA8451Q(	0x1D	/* i2cAddress */,	kWarpDefaultSupplyVoltageMillivoltsMMA8451Q	);
 #endif
 
 #if (WARP_BUILD_ENABLE_DEVLPS25H)
@@ -1908,6 +1909,11 @@ main(void)
 	int rttKey = -1;
 	bool _originalWarpExtraQuietMode = gWarpExtraQuietMode;
 	gWarpExtraQuietMode = false;
+
+	warpPrint("Initialise SSD1331\n");
+	devSSD1331init();
+	warpPrint("Initialisation complete\n");
+
 	warpPrint("Press any key to show menu...\n");
 	gWarpExtraQuietMode = _originalWarpExtraQuietMode;
 
