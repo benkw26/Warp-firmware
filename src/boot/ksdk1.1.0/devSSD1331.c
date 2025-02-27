@@ -172,14 +172,14 @@ devSSD1331init(void)
 	writeCommand(kSSD1331CommandMASTERCURRENT);	// 0x87
 	writeCommand(0x0F);
 	
-	writeCommand(kSSD1331CommandPRECHARGELEVEL);
-	writeCommand(0x3E);
-	writeCommand(kSSD1331CommandPRECHARGEA);
-	writeCommand(0xFF);
-	writeCommand(kSSD1331CommandPRECHARGEB);
-	writeCommand(0xFF);
-	writeCommand(kSSD1331CommandPRECHARGEC);
-	writeCommand(0xFF);
+	// writeCommand(kSSD1331CommandPRECHARGELEVEL);
+	// writeCommand(0x3E);
+	// writeCommand(kSSD1331CommandPRECHARGEA);
+	// writeCommand(0xFF);
+	// writeCommand(kSSD1331CommandPRECHARGEB);
+	// writeCommand(0xFF);
+	// writeCommand(kSSD1331CommandPRECHARGEC);
+	// writeCommand(0xFF);
 	
 	writeCommand(kSSD1331CommandDRAWRECT);
 	
@@ -189,13 +189,13 @@ devSSD1331init(void)
 	writeCommand(0x5F); // Ending column (95)
 	writeCommand(0x3F); // Ending row (63)
 	
-	writeCommand(0x00); // Outline color R
+	writeCommand(0x90); // Outline color R
 	writeCommand(0xFF); // Outline color G (brightest green)
-	writeCommand(0x00); // Outline color B
+	writeCommand(0x90); // Outline color B
 	
-	writeCommand(0x00); // Fill color R
+	writeCommand(0x90); // Fill color R
 	writeCommand(0xFF); // Fill color G (brightest green)
-	writeCommand(0x00); // Fill color B
+	writeCommand(0x90); // Fill color B
 
 
 	SEGGER_RTT_WriteString(0, "\r\n\tDone with draw rectangle...\n");
